@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Domain Extractor</title>
+</head>
+<body>
+    <h1>Domain Extractor</h1>
+    <p>Enter URLs:</p>
+    <style> 
+        body {background-color:white; text-align: center; color: black;}
+    </style>
+    <textarea id="urlsInput" rows="4" cols="50" placeholder="Enter URLs"></textarea>
+    <br>
+    <button onclick="extractAndDownloadDomains()">Submit</button>
+    <script>
+        function extractAndDownloadDomains() {
+            const urlsInput = document.getElementById('urlsInput');
+
+            const urls = urlsInput.value.split(/\s+/);  // Split input by spaces
+            const domains = [];
+
+            for (const url of urls) {
+                const domain = extractDomain(url);
+                if (domain) {
+                    domains.push([domain]);
+                }
+            }
+
+            const csvContent = domains.map(row => row.join(',')).join('\n');
+            const blob = new Blob([csvContent], { type: 'text/csv' });
+
+            // Automatically download the CSV file
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = 'domains.csv';
+            link.click();
+        }
+
+        function extractDomain(url) {
+            const urlObj = new URL(url);
+            return urlObj.hostname.replace(/^www\./, '');  // Remove 'www.' if present
+        }
+    </script>
+</body>
+</html>
